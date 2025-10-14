@@ -8,10 +8,13 @@ import { Router, RouterLink } from '@angular/router';
 import { Donationservice } from '../../Services/donationservice';
 
 
+import { Donationoptions } from '../donationoptions/donationoptions';
+
+
 @Component({
   selector: 'app-dashboardcomponent',
   standalone:true,
-  imports: [CommonModule,FormsModule,RouterLink],
+  imports: [CommonModule,FormsModule,RouterLink, Donationoptions],
   templateUrl: './dashboardcomponent.html',
   styleUrl: './dashboardcomponent.css'
 })

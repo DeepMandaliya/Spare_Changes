@@ -7,6 +7,7 @@ import { Plaidservice } from '../../Services/plaidservice';
 
 @Component({
   selector: 'app-donationoptions',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './donationoptions.html',
   styleUrl: './donationoptions.css'
