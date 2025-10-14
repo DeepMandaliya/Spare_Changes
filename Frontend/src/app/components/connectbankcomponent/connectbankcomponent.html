@@ -1,0 +1,264 @@
+<!-- components/connect-bank/connect-bank.component.html -->
+<div class="connect-bank-container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" routerLink="/dashboard">
+        <i class="fas fa-arrow-left me-2"></i>
+        Back to Dashboard
+      </a>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8">
+        
+        <!-- 1. EXISTING PAYMENT METHODS VIEW -->
+        <div *ngIf="hasExistingPaymentMethods && !showPaymentSelection" class="existing-payment-methods">
+          <div class="card">
+            <div class="card-header bg-success text-white">
+              <h3 class="mb-0">
+                <i class="fas fa-check-circle me-2"></i>
+                Your Connected Payment Methods
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="payment-methods-list">
+                <div *ngFor="let pm of existingPaymentMethods" class="payment-method-item card mb-3">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <div class="d-flex align-items-center">
+                          <i class="fas {{ getPaymentMethodIcon(pm) }} fa-2x text-primary me-3"></i>
+                          <div>
+                            <h5 class="mb-1">{{ getPaymentMethodDisplay(pm) }}</h5>
+                            <p class="text-muted mb-0">{{ pm.brand }}</p>
+                            <div class="mt-1">
+                              <span *ngIf="pm.isDefault" class="badge bg-success me-2">
+                                <i class="fas fa-star me-1"></i>Default
+                              </span>
+                              <span *ngIf="!pm.isActive" class="badge bg-warning">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Inactive
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <div class="btn-group" role="group">
+                          <!-- Set as Default Button (show only if NOT default) -->
+                          <button *ngIf="!pm.isDefault && pm.isActive"
+                                  class="btn btn-outline-primary btn-sm me-2"
+                                  (click)="setDefaultPaymentMethod(pm)"
+                                  [disabled]="isLoading">
+                            <i class="fas fa-star me-1"></i> Set as Default
+                          </button>
+                          
+                          <!-- Activate Button (show only if inactive) -->
+                          <button *ngIf="!pm.isActive"
+                                  class="btn btn-outline-warning btn-sm me-2"
+                                  (click)="activatePaymentMethod(pm)"
+                                  [disabled]="isLoading">
+                            <i class="fas fa-power-off me-1"></i> Activate
+                          </button>
+                          
+                          <!-- Remove Button -->
+                          <button 
+                            class="btn btn-outline-danger btn-sm"
+                            (click)="removePaymentMethod(pm)"
+                            [disabled]="isLoading || pm.isDefault">
+                            <i class="fas fa-trash me-1"></i> Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="add-more-section text-center mt-4 p-4 bg-light rounded">
+                <h4>Want to add another payment method?</h4>
+                <p class="text-muted mb-3">Connect another bank account or credit card</p>
+                <button 
+                  class="btn btn-primary"
+                  (click)="connectBank()"
+                  [disabled]="isLoading">
+                  <i class="fas fa-plus me-2"></i> Link Another Account
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. INITIAL CONNECT BANK VIEW (when no payment methods exist) -->
+          <div *ngIf="!hasExistingPaymentMethods && !showPaymentSelection" class="connection-init">
+          <div class="card welcome-card">
+            <div class="card-body text-center p-5">
+              <div class="welcome-icon mb-4">
+                <i class="fas fa-university fa-4x text-primary"></i>
+              </div>
+              <h1 class="display-6 fw-bold mb-3">Connect Your Bank</h1>
+              <p class="lead text-muted mb-4">
+                Securely link your bank account to start automatic round-up donations.
+              </p>
+              
+              <!-- Loading State for Connection -->
+              <div *ngIf="isLoading" class="loading-state text-center py-4">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                <p class="mt-3 text-muted">Opening secure bank connection...</p>
+              </div>
+
+              <!-- Connect Button -->
+              <div *ngIf="!isLoading">
+                <button 
+                  (click)="connectBank()" 
+                  class="btn btn-primary btn-lg px-5 py-3"
+                  [disabled]="isLoading">
+                  <i class="fas fa-lock me-2"></i>
+                  Connect Bank Account
+                </button>
+              </div>
+
+              <div class="security-notice mt-4">
+                <small class="text-muted">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Powered by Plaid • We never store your banking credentials
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. PAYMENT METHOD SELECTION VIEW (after Plaid connection) -->
+        <div *ngIf="showPaymentSelection" class="payment-selection">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h3 class="mb-1">
+                    <i class="fas fa-university me-2"></i>
+                    Payment Methods from {{ institutionName }}
+                  </h3>
+                  <p class="mb-0 opacity-75">Select your preferred payment method for donations</p>
+                </div>
+                <button (click)="cancelSelection()" class="btn btn-light btn-sm">
+                  <i class="fas fa-times me-1"></i>Cancel
+                </button>
+              </div>
+            </div>
+            
+            <div class="card-body p-4">
+              
+              <!-- Loading State -->
+              <div *ngIf="isLoading" class="text-center py-5">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                <p class="mt-3 text-muted">Loading your payment methods...</p>
+              </div>
+
+              <!-- Content when not loading -->
+              <div *ngIf="!isLoading">
+                <!-- Bank Accounts Section -->
+                <div *ngIf="paymentMethods.bankAccounts.length > 0" class="payment-section mb-5">
+                  <h4 class="section-title">
+                    <i class="fas fa-university text-primary me-2"></i>
+                    Bank Accounts (ACH)
+                  </h4>
+                  
+                  <div class="accounts-grid">
+                    <div *ngFor="let account of paymentMethods.bankAccounts" 
+                         class="account-card card">
+                      <div class="card-body">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h5 class="account-name mb-1">{{ account.name }}</h5>
+                            <div class="account-details">
+                              <span class="account-number">****{{ account.mask }}</span>
+                              <span class="account-type badge bg-light text-dark ms-2">
+                                {{ getAccountDisplayType(account) }}
+                              </span>
+                            </div>
+                            <div class="account-balance text-success">
+                              <small>
+                                <i class="fas fa-wallet me-1"></i>
+                                ${{ account.balances?.current?.toFixed(2) || '0.00' }} available
+                              </small>
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <button 
+                              (click)="selectBankAccount(account)"
+                              class="btn btn-primary"
+                              [disabled]="isLoading">
+                              <i class="fas fa-check me-1"></i>
+                              Select
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Credit Cards Section -->
+                <div *ngIf="paymentMethods.creditCards.length > 0" class="payment-section mb-4">
+                  <h4 class="section-title">
+                    <i class="fas fa-credit-card text-success me-2"></i>
+                    Credit Cards
+                  </h4>
+                  
+                  <div class="accounts-grid">
+                    <div *ngFor="let card of paymentMethods.creditCards" 
+                         class="account-card card">
+                      <div class="card-body">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h5 class="account-name mb-1">{{ card.name || 'Credit Card' }}</h5>
+                            <div class="account-details">
+                              <span class="account-number">****{{ card.mask || '0000' }}</span>
+                              <span class="account-type badge bg-light text-dark ms-2">
+                                {{ getAccountDisplayType(card) }}
+                              </span>
+                            </div>
+                            <div class="account-balance text-info">
+                              <small>
+                                <i class="fas fa-chart-line me-1"></i>
+                                ${{ card.balances?.current?.toFixed(2) || '0.00' }} balance
+                              </small>
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <button 
+                              (click)="selectCreditCard(card)"
+                              class="btn btn-success"
+                              [disabled]="isLoading">
+                              <i class="fas fa-check me-1"></i>
+                              Select
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- No Payment Methods Found -->
+                <div *ngIf="paymentMethods.bankAccounts.length === 0 && paymentMethods.creditCards.length === 0" 
+                     class="text-center py-5">
+                  <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                  <h4>No Payment Methods Found</h4>
+                  <p class="text-muted mb-4">
+                    We couldn't find any eligible payment methods in your account.
+                  </p>
+                  <button (click)="cancelSelection()" class="btn btn-primary">
+                    <i class="fas fa-redo me-1"></i>Try Again
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

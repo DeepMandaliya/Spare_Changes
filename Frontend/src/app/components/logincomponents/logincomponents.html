@@ -1,0 +1,52 @@
+
+<div class="login-container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Login to Charity RoundUp</h2>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="loginData.email"
+            required
+            email
+            class="form-control"
+            placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="loginData.password"
+            required
+            class="form-control"
+            placeholder="Enter your password">
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-block"
+          [disabled]="!loginForm.valid || isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ isLoading ? 'Logging in...' : 'Login' }}
+        </button>
+
+        <div class="text-center mt-3">
+          <p>Don't have an account? <a routerLink="/register">Registerhere</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

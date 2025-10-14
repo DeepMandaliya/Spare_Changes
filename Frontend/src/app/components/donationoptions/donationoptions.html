@@ -1,0 +1,186 @@
+<div class="donation-simple-container">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        <i class="fas fa-hand-holding-heart me-2"></i>
+        Make a Donation
+      </h4>
+    </div>
+    <div class="card-body">
+      
+      <!-- Donation Type Selection -->
+      <div class="donation-type-tabs mb-4">
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'direct'" 
+               (click)="setActiveTab('direct')">
+              <i class="fas fa-bolt me-2"></i>Donate Now
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'roundup'" 
+               (click)="setActiveTab('roundup')">
+              <i class="fas fa-coins me-2"></i>Round-up Donation
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Direct Donation -->
+      <div *ngIf="activeTab === 'direct'" class="direct-donation">
+        <h5 class="section-title">Make a Direct Donation</h5>
+        
+        <!-- Validation Error - Shows immediately -->
+        <div *ngIf="validationError" class="alert alert-warning mb-3">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ validationError }}
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Select Charity *</label>
+              <select class="form-select" [(ngModel)]="selectedCharityId" (change)="onCharityChange()">
+                <option [value]="0">Choose a charity...</option>
+                <option *ngFor="let charity of charities" [value]="charity.id">
+                  {{ charity.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Amount ($) *</label>
+              <input type="number" class="form-control" [(ngModel)]="directDonationAmount" 
+                     (input)="onAmountChange()"
+                     min="1" step="0.01" placeholder="Enter amount">
+              <small class="form-text text-muted">Minimum donation: $1.00</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method Selection -->
+        <div *ngIf="userPaymentMethods.length > 0" class="mb-3">
+          <label class="form-label">Payment Method *</label>
+          <select class="form-select" [(ngModel)]="selectedPaymentMethodId" (change)="onPaymentMethodChange()">
+            <option [value]="0">Select payment method...</option>
+            <option *ngFor="let method of userPaymentMethods" [value]="method.id">
+              {{ method.brand }} ****{{ method.lastFour }} 
+              ({{ method.type === 'us_bank_account' ? 'Bank Account' : 'Credit Card' }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Show message if no payment methods -->
+        <div *ngIf="userPaymentMethods.length === 0" class="alert alert-info mb-3">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>No payment methods found.</strong> Please set up a payment method before making donations.
+        </div>
+
+        <button class="btn btn-success w-100" 
+                (click)="makeDirectDonation()"
+                [disabled]="!isDirectDonationValid() || processing">
+          <i class="fas fa-heart me-2"></i>
+          {{ processing ? 'Processing...' : 'Donate Now' }}
+        </button>
+      </div>
+
+      <!-- Round-up Donation -->
+      <div *ngIf="activeTab === 'roundup'" class="roundup-donation">
+        <h5 class="section-title">Round-up Your Spare Change</h5>
+        
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          This shows sample transactions to demonstrate round-up. Connect your bank with Plaid to see real transactions.
+        </div>
+
+        <div class="text-center mb-3">
+          <button class="btn btn-outline-primary" (click)="loadRoundUpCalculation()" [disabled]="loadingRoundUp">
+            <i class="fas fa-calculator me-2"></i>
+            {{ loadingRoundUp ? 'Calculating...' : 'Calculate Round-up' }}
+          </button>
+        </div>
+
+        <div *ngIf="roundUpData" class="roundup-results">
+          <!-- Round-up Summary -->
+          <div class="roundup-summary-card mb-4">
+            <div class="row text-center">
+              <div class="col-md-4">
+                <div class="summary-item">
+                  <div class="summary-value">${{ roundUpData.summary.totalRoundUp }}</div>
+                  <div class="summary-label">Total Round-up</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-item">
+                  <div class="summary-value">{{ roundUpData.summary.transactionCount }}</div>
+                  <div class="summary-label">Transactions</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-item">
+                  <div class="summary-value">${{ roundUpData.summary.averageRoundUp }}</div>
+                  <div class="summary-label">Avg per Transaction</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transactions List -->
+          <h6>Recent Transactions</h6>
+          <div class="transactions-list mb-4">
+            <div *ngFor="let transaction of roundUpData.transactions" class="transaction-item">
+              <div class="transaction-info">
+                <div class="merchant">{{ transaction.name }}</div>
+                <div class="details">
+                  <span class="category">{{ transaction.category }}</span>
+                  <span class="date">{{ transaction.date }}</span>
+                </div>
+              </div>
+              <div class="transaction-amounts">
+                <div class="spent">Spent: ${{ transaction.amount }}</div>
+                <div class="roundup">Round-up: ${{ transaction.roundUp }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donate Round-up -->
+          <div class="donate-roundup-section">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <strong>Donate your round-up amount: ${{ roundUpData.summary.totalRoundUp }}</strong>
+                <small class="d-block text-muted">
+                  This is the total spare change from rounding up your transactions to the nearest dollar
+                </small>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-success w-100" 
+                        (click)="donateRoundUp()"
+                        [disabled]="processing || !roundUpData.summary.totalRoundUp">
+                  <i class="fas fa-coins me-2"></i>
+                  Donate ${{ roundUpData.summary.totalRoundUp }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!roundUpData && !loadingRoundUp" class="text-center text-muted py-4">
+          <i class="fas fa-calculator fa-3x mb-3"></i>
+          <p>Click "Calculate Round-up" to see how much spare change you can donate!</p>
+        </div>
+      </div>
+
+      <!-- Success/Error Messages -->
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success mt-3">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ successMessage }}
+      </div>
+    </div>
+  </div>
+</div>

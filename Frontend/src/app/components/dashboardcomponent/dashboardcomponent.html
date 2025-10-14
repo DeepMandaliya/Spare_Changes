@@ -1,0 +1,257 @@
+<!-- components/dashboard/dashboard.component.html -->
+<div class="dashboard-container">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-hand-holding-heart me-2"></i>
+        <!-- CharityStream -->
+         CharityWellSpring 
+      </a>
+      <div class="navbar-nav ms-auto">
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle me-1"></i>
+            {{ currentUser?.username }}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/transactions"><i class="fas fa-receipt me-2"></i>Transactions</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" (click)="logout(); $event.preventDefault()">
+              <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-4">
+    <!-- Welcome Section -->
+    <div class="welcome-section mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="welcome-title">{{ getGreeting() }}, {{ currentUser?.username }}! </h1>
+          <p class="welcome-subtitle">Your small change is making a big difference in the world.</p>
+        </div>
+    
+      </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stat-card total-donated">
+          <div class="stat-icon">
+            <i class="fas fa-donate"></i>
+          </div>
+          <div class="stat-content">
+            <h3>${{ userStats?.totalDonated?.toFixed(2) || '0.00' }}</h3>
+            <p>Total Donated</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card donations-made">
+          <div class="stat-icon">
+            <i class="fas fa-hand-holding-heart"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ userStats?.transactionCount || 0 }}</h3>
+            <p>Donations Made</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card monthly-donations">
+          <div class="stat-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="stat-content">
+            <h3>${{ userStats?.monthlyDonations?.toFixed(2) || '0.00' }}</h3>
+            <p>This Month</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card favorite-charity">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ userStats?.favoriteCharity ? '✓' : '--' }}</h3>
+            <p>{{ userStats?.favoriteCharity || 'No Charity' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Tabs -->
+    <div class="main-content">
+      <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 'overview'" 
+                 (click)="setActiveTab('overview')">
+                <i class="fas fa-chart-bar me-2"></i>Overview
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 'transactions'" 
+                 (click)="setActiveTab('transactions')">
+                <i class="fas fa-receipt me-2"></i>Recent Transactions
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          
+          <!-- Overview Tab -->
+          <div *ngIf="activeTab === 'overview'" class="overview-tab">
+            <div class="row">
+              <!-- Quick Actions -->
+              <div class="col-md-6">
+                <h5 class="section-title">Quick Actions</h5>
+                <div class="action-cards">
+                  <div class="action-card" routerLink="/connect-bank">
+                    <div class="action-icon bank">
+                      <i class="fas fa-university"></i>
+                    </div>
+                    <div class="action-content">
+                      <h6>Connect Your Account</h6>
+                      <p>Link your bank for automatic round-ups</p>
+                    </div>
+                    <div class="action-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                  </div>
+                  
+                  <!-- <div class="action-card" routerLink="/connect-card">
+                    <div class="action-icon card">
+                      <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="action-content">
+                      <h6>Add Credit Card</h6>
+                      <p>Use card for direct donations</p>
+                    </div>
+                    <div class="action-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                  </div> -->
+                  
+                  <div class="action-card" routerLink="/transactions">
+                    <div class="action-icon history">
+                      <i class="fas fa-history"></i>
+                    </div>
+                    <div class="action-content">
+                      <h6>View History</h6>
+                      <p>See all your donations</p>
+                    </div>
+                    <div class="action-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Impact Stats -->
+              <div class="col-md-6">
+                <h5 class="section-title">Your Impact</h5>
+                <div class="impact-stats" *ngIf="userStats?.impact">
+                  <div class="impact-stat">
+                    <div class="impact-icon meal">🍽️</div>
+                    <div class="impact-info">
+                      <!-- <strong>{{ userStats.impact.mealsProvided }}</strong> -->
+                      <span>meals provided to families in need</span>
+                    </div>
+                  </div>
+                  <div class="impact-stat">
+                    <div class="impact-icon tree">🌳</div>
+                    <div class="impact-info">
+                      <!-- <strong>{{ userStats.impact.treesPlanted }}</strong> -->
+                      <span>trees planted for a greener planet</span>
+                    </div>
+                  </div>
+                  <div class="impact-stat">
+                    <div class="impact-icon education">📚</div>
+                    <div class="impact-info">
+                      <!-- <strong>{{ userStats.impact.educationHours }}</strong> -->
+                      <span>hours of education supported</span>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="!userStats?.impact" class="text-center text-muted py-4">
+                  <i class="fas fa-seedling fa-3x mb-3"></i>
+                  <p>Start donating to see your impact grow!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transactions Tab -->
+          <div *ngIf="activeTab === 'transactions'" class="transactions-tab">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="mb-0">Recent Transactions</h5>
+              <a routerLink="/transactions" class="btn btn-outline-primary btn-sm">
+                View All
+              </a>
+            </div>
+            
+            <div *ngIf="recentTransactions.length === 0" class="text-center py-4">
+              <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+              <h6>No transactions</h6>
+              <p class="text-muted mb-3">    You haven't made any transactions yet. </p>
+              <!-- <button class="btn btn-primary" routerLink="/connect-bank">
+                Connect Bank Account
+              </button> -->
+            </div>
+
+            <div *ngIf="recentTransactions.length > 0" class="transactions-list">
+              <div *ngFor="let transaction of recentTransactions" class="transaction-item">
+                <div class="transaction-main">
+                  <div class="transaction-icon">
+                    <i class="fas" [ngClass]="{
+                      'fa-arrow-up': transaction.roundUpAmount > 0,
+                      'fa-heart': transaction.roundUpAmount === 0
+                    }"></i>
+                  </div>
+                  <div class="transaction-details">
+                    <div class="transaction-description">
+                      {{ transaction.description }}
+                    </div>
+                    <div class="transaction-meta">
+                      <span class="transaction-date">{{ formatDate(transaction.transactionDate) }}</span>
+                      <span class="transaction-charity" *ngIf="transaction.charity">
+                        • {{ transaction.charity.name }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="transaction-amounts">
+                  <div class="amount-main">${{ transaction.totalAmount.toFixed(2) }}</div>
+                  <div class="amount-roundup" *ngIf="transaction.roundUpAmount > 0">
+                    +${{ transaction.roundUpAmount.toFixed(2) }} round-up
+                  </div>
+                  <div class="transaction-status">
+                    <span class="badge" [ngClass]="getStatusBadgeClass(transaction.status)">
+                      {{ transaction.status }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- In dashboard.component.html, add this after the transactions tab -->
+<div class="row mt-4">
+  <div class="col-12">
+    <app-donationoptions></app-donationoptions>
+  </div>
+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

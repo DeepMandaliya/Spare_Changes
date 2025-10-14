@@ -1,0 +1,369 @@
+/* components/dashboard/dashboard.component.css */
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Navigation */
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/* Welcome Section */
+.welcome-section {
+  padding: 2rem 0;
+}
+
+.welcome-title {
+  font-weight: 300;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* Stat Cards */
+.stat-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s;
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 1.5rem;
+}
+
+.total-donated .stat-icon {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.donations-made .stat-icon {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: white;
+}
+
+.monthly-donations .stat-icon {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+}
+
+.favorite-charity .stat-icon {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  color: white;
+}
+
+.stat-content h3 {
+  margin: 0;
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.8rem;
+}
+
+.stat-content p {
+  margin: 0.25rem 0 0 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+/* Main Content */
+.main-content .card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  border-radius: 20px 20px 0 0 !important;
+  padding: 0;
+}
+
+.nav-tabs {
+  border: none;
+  padding: 0 1.5rem;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  color: #7f8c8d;
+  font-weight: 500;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-tabs .nav-link.active {
+  color: #667eea;
+  border-bottom: 3px solid #667eea;
+  background: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* Action Cards */
+.action-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.action-card:hover {
+  background: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateX(5px);
+  color: inherit;
+  text-decoration: none;
+}
+
+.action-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  color: white;
+}
+
+.action-icon.bank {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.action-icon.card {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.action-icon.history {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.action-content h6 {
+  margin: 0;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.action-content p {
+  margin: 0.25rem 0 0 0;
+  color: #7f8c8d;
+  font-size: 0.875rem;
+}
+
+.action-arrow {
+  margin-left: auto;
+  color: #bdc3c7;
+}
+
+/* Impact Stats */
+.impact-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.impact-stat {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.impact-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+  width: 50px;
+  text-align: center;
+}
+
+.impact-info {
+  flex: 1;
+}
+
+.impact-info strong {
+  display: block;
+  font-size: 1.5rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.impact-info span {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+/* Transactions */
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.transaction-item:hover {
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-main {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.transaction-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #667eea;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.transaction-details {
+  flex: 1;
+}
+
+.transaction-description {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.transaction-meta {
+  font-size: 0.875rem;
+  color: #7f8c8d;
+}
+
+.transaction-amounts {
+  text-align: right;
+}
+
+.amount-main {
+  font-weight: 700;
+  color: #27ae60;
+  font-size: 1.1rem;
+}
+
+.amount-roundup {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  margin-top: 0.25rem;
+}
+
+/* Badges */
+.badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-processing {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-pending {
+  background: #cce7ff;
+  color: #004085;
+}
+
+.badge-failed {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Section Titles */
+.section-title {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 2rem;
+  }
+  
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+  
+  .action-card {
+    padding: 1rem;
+  }
+  
+  .impact-stat {
+    padding: 0.75rem;
+  }
+  
+  .transaction-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .transaction-amounts {
+    text-align: left;
+    margin-top: 1rem;
+    width: 100%;
+  }
+}

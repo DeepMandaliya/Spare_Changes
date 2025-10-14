@@ -1,0 +1,182 @@
+/* components/register/register.component.css */
+.register-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px 20px 0 0 !important;
+  padding: 2.5rem 2rem;
+  border: none;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-weight: 300;
+  font-size: 2rem;
+}
+
+.card-body {
+  padding: 2.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+  padding: 12px 16px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-text {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+  margin-top: 0.5rem;
+}
+
+.strength-bar {
+  height: 4px;
+  background-color: #e9ecef;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s;
+  border-radius: 2px;
+}
+
+.password-weak .strength-fill {
+  width: 25%;
+  background-color: #dc3545;
+}
+
+.password-fair .strength-fill {
+  width: 50%;
+  background-color: #fd7e14;
+}
+
+.password-good .strength-fill {
+  width: 75%;
+  background-color: #ffc107;
+}
+
+.password-strong .strength-fill {
+  width: 100%;
+  background-color: #28a745;
+}
+
+.password-weak small { color: #dc3545; }
+.password-fair small { color: #fd7e14; }
+.password-good small { color: #ffc107; }
+.password-strong small { color: #28a745; }
+
+/* Benefits Section */
+.benefits-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+}
+
+.benefit-item {
+  padding: 1rem;
+}
+
+.benefit-item h5 {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.benefit-item p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Alert Styles */
+.alert {
+  border-radius: 10px;
+  border: none;
+  padding: 1rem 1.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .register-container {
+    padding: 10px;
+  }
+  
+  .card-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  .benefits-section {
+    padding: 1.5rem;
+  }
+  
+  .benefit-item {
+    margin-bottom: 1.5rem;
+  }
+}

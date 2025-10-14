@@ -1,0 +1,139 @@
+<!-- components/register/register.component.html -->
+<div class="register-container">
+  <div class="card register-card">
+    <div class="card-header text-center">
+      <h2>Join Charity RoundUp</h2>
+      <p class="text-muted">Start making a difference with your spare change</p>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        
+        <!-- Username -->
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            [(ngModel)]="registerData.username"
+            required
+            class="form-control"
+            placeholder="Choose a username"
+            minlength="3">
+          <div class="form-text">This will be your display name</div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="registerData.email"
+          
+            class="form-control"
+            placeholder="Enter your email">
+          <div class="form-text">We'll never share your email with anyone else</div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="registerData.password"
+            required
+            minlength="6"
+            class="form-control"
+            placeholder="Create a password"
+            (input)="checkPasswordStrength()">
+          <div class="password-strength" *ngIf="registerData.password">
+            <div class="strength-bar">
+              <div class="strength-fill" [ngClass]="getPasswordStrengthClass()"></div>
+            </div>
+            <small [ngClass]="getPasswordStrengthClass()">
+              {{ getPasswordStrengthText() }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            required
+            class="form-control"
+            placeholder="Confirm your password">
+          <div *ngIf="registerData.password && confirmPassword && registerData.password !== confirmPassword" 
+               class="text-danger small mt-1">
+            Passwords do not match
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          <i class="fas fa-exclamation-circle me-2"></i>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg w-100 mt-3"
+          [disabled]="!registerForm.valid || isLoading || registerData.password !== confirmPassword">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+
+        <!-- Login Link -->
+        <div class="text-center mt-4">
+          <p class="mb-0">
+            Already have an account? 
+            <a routerLink="/login" class="text-primary text-decoration-none fw-bold">
+              Sign in here
+            </a>
+          </p>
+        </div>
+
+        <!-- Terms Notice -->
+        <div class="text-center mt-3">
+          <small class="text-muted">
+            By creating an account, you agree to our 
+            <a href="#" class="text-muted">Terms of Service</a> and 
+            <a href="#" class="text-muted">Privacy Policy</a>
+          </small>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Benefits Section -->
+  <div class="benefits-section">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-4 benefit-item">
+          <i class="fas fa-shield-alt fa-2x text-primary mb-3"></i>
+          <h5>Secure & Private</h5>
+          <p class="text-muted">Bank-level security with encryption</p>
+        </div>
+        <div class="col-md-4 benefit-item">
+          <i class="fas fa-hand-holding-heart fa-2x text-primary mb-3"></i>
+          <h5>Make an Impact</h5>
+          <p class="text-muted">Small change, big difference</p>
+        </div>
+        <div class="col-md-4 benefit-item">
+          <i class="fas fa-chart-line fa-2x text-primary mb-3"></i>
+          <h5>Track Your Impact</h5>
+          <p class="text-muted">See how your donations help</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
