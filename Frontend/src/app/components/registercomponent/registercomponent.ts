@@ -12,48 +12,51 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './registercomponent.css'
 })
 export class Registercomponent {
-  registerData: RegisterRequest = {
-    username: '',
-    email: '',
-    password: ''
-  };
-  confirmPassword = '';
-  isLoading = false;
-  errorMessage = '';
-  passwordStrength = '';
-
-  constructor(
-    private authService: Authservice,
-    private router: Router
-  ) {}
-
-  onSubmit(): void {
-    if (this.registerData.password !== this.confirmPassword) {
-      this.errorMessage = 'Passwords do not match';
-      return;
-    }
-
-    if (this.registerData.password.length < 6) {
-      this.errorMessage = 'Password must be at least 6 characters long';
-      return;
-    }
-
-    this.isLoading = true;
-    this.errorMessage = '';
-
-    this.authService.register(this.registerData).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = error || 'Registration failed. Please try again.';
+    registerData: RegisterRequest = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      password: '',
+      termsAccepted: false
+    };
+    confirmPassword = '';
+    isLoading = false;
+    errorMessage = '';
+    passwordStrength = '';
+  
+    constructor(
+      private authService: Authservice,
+      private router: Router
+    ){}
+  
+    onSubmit(): void {
+      if (this.registerData.password !== this.confirmPassword) {
+        this.errorMessage = 'Passwords do not match';
+        return;
       }
-    });
-  }
-
-  checkPasswordStrength(): void {
+  
+      if (this.registerData.password.length < 6) {
+        this.errorMessage = 'Password must be at least 6 characters long';
+        return;
+      }
+  
+      this.isLoading = true;
+      this.errorMessage = '';
+  
+      this.authService.register(this.registerData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.router.navigate(['/connect-bank']);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = error || 'Registration failed. Please try again.';
+        }
+      });
+    }
+  
+    checkPasswordStrength(): void {
     const password = this.registerData.password;
     if (password.length === 0) {
       this.passwordStrength = '';

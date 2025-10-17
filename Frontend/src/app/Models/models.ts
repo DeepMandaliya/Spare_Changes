@@ -9,9 +9,12 @@ export interface User {
 }
 
 export interface RegisterRequest {
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
+  termsAccepted: boolean;
 }
 
 export interface LoginRequest {

@@ -33,6 +33,8 @@ namespace The_Charity.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastLogin { get; set; }
 
+        public bool termsAccepted { get; set; }
+
         // Navigation properties
         public virtual ICollection<PlaidItem> PlaidItems { get; set; }
         public virtual ICollection<Models.PaymentMethod> PaymentMethods { get; set; }

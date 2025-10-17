@@ -21,7 +21,6 @@ namespace The_Charity.Models
 
         [StringLength(255)]
         public string? StripePayoutId { get; set; }
-        public string? Customeremail { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal OriginalAmount { get; set; }

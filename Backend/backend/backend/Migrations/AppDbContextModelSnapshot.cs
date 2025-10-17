@@ -8,7 +8,7 @@ using The_Charity.AppDBContext;
 
 #nullable disable
 
-namespace The_Charity.Migrations
+namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -239,6 +239,82 @@ namespace The_Charity.Migrations
                     b.ToTable("DonationPreferences");
                 });
 
+            modelBuilder.Entity("The_Charity.Models.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CharityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharityId");
+
+                    b.HasIndex("TemplateId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("The_Charity.Models.NotificationTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BodyHtml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Channel")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Subject")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NotificationsTemplates");
+                });
+
             modelBuilder.Entity("The_Charity.Models.PaymentMethod", b =>
                 {
                     b.Property<Guid>("Id")
@@ -274,6 +350,9 @@ namespace The_Charity.Migrations
 
                     b.Property<bool>("RequiresVerification")
                         .HasColumnType("bit");
+
+                    b.Property<string>("StripeCustomerId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StripePaymentMethodId")
                         .IsRequired()
@@ -559,6 +638,9 @@ namespace The_Charity.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("termsAccepted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("updatedAt")
                         .HasColumnType("bit");
 
@@ -676,6 +758,27 @@ namespace The_Charity.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("The_Charity.Models.Notification", b =>
+                {
+                    b.HasOne("The_Charity.Models.Charity", "Charity")
+                        .WithMany()
+                        .HasForeignKey("CharityId");
+
+                    b.HasOne("The_Charity.Models.NotificationTemplate", "Template")
+                        .WithMany("Notifications")
+                        .HasForeignKey("TemplateId");
+
+                    b.HasOne("The_Charity.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Charity");
+
+                    b.Navigation("Template");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("The_Charity.Models.PaymentMethod", b =>
                 {
                     b.HasOne("The_Charity.Models.User", "User")
@@ -756,6 +859,11 @@ namespace The_Charity.Migrations
                     b.Navigation("DefaultCharity");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("The_Charity.Models.NotificationTemplate", b =>
+                {
+                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("The_Charity.Models.User", b =>

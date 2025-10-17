@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace The_Charity.Migrations
+namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class changedIntToGuid : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,6 +35,24 @@ namespace The_Charity.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NotificationsTemplates",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Channel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    BodyHtml = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotificationsTemplates", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -53,7 +71,8 @@ namespace The_Charity.Migrations
                     PlaidUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StripeCustomerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    termsAccepted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -170,6 +189,39 @@ namespace The_Charity.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CharityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TemplateId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Charities_CharityId",
+                        column: x => x.CharityId,
+                        principalTable: "Charities",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Notifications_NotificationsTemplates_TemplateId",
+                        column: x => x.TemplateId,
+                        principalTable: "NotificationsTemplates",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Notifications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PaymentMethods",
                 columns: table => new
                 {
@@ -178,6 +230,7 @@ namespace The_Charity.Migrations
                     Label = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     StripePaymentMethodId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    StripeCustomerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Last4Digit = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     Brand = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ExpMonth = table.Column<int>(type: "int", nullable: true),
@@ -379,6 +432,21 @@ namespace The_Charity.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_CharityId",
+                table: "Notifications",
+                column: "CharityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_TemplateId",
+                table: "Notifications",
+                column: "TemplateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PaymentMethods_StripePaymentMethodId",
                 table: "PaymentMethods",
                 column: "StripePaymentMethodId",
@@ -451,6 +519,9 @@ namespace The_Charity.Migrations
                 name: "Donations");
 
             migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
                 name: "Payouts");
 
             migrationBuilder.DropTable(
@@ -467,6 +538,9 @@ namespace The_Charity.Migrations
 
             migrationBuilder.DropTable(
                 name: "PaymentMethods");
+
+            migrationBuilder.DropTable(
+                name: "NotificationsTemplates");
 
             migrationBuilder.DropTable(
                 name: "Charities");

@@ -18,7 +18,7 @@ export class Authservice {
   }
 
   register(registerData: RegisterRequest): Observable<AuthResponse> {
-    return this.api.post<AuthResponse>('http://localhost:5292/api/Auth/register', registerData).pipe(
+    return this.api.post<AuthResponse>('https://localhost:7015/api/Auth/register', registerData).pipe(
       tap(response => {
         this.setCurrentUser(response.user);
       })

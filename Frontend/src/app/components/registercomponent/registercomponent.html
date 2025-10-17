@@ -1,137 +1,103 @@
-<!-- components/register/register.component.html -->
 <div class="register-container">
-  <div class="card register-card">
-    <div class="card-header text-center">
-      <h2>Join Charity RoundUp</h2>
-      <p class="text-muted">Start making a difference with your spare change</p>
-    </div>
-    <div class="card-body">
-      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-        
-        <!-- Username -->
-        <div class="form-group">
-          <label for="username" class="form-label">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            [(ngModel)]="registerData.username"
-            required
-            class="form-control"
-            placeholder="Choose a username"
-            minlength="3">
-          <div class="form-text">This will be your display name</div>
+  <div class="register-form-section">
+    <div class="form-container">
+      <div class="form-header">
+        <a routerLink="/" class="back-link">← Back</a>
+        <div class="logo">
+          <img src="https://img.icons8.com/ios-filled/50/000000/charity-box.png" alt="SpareChange Logo" style="height: 24px; margin-right: 8px;">
+          <span>SpareChange</span>
         </div>
-
-        <!-- Email -->
-        <div class="form-group">
-          <label for="email" class="form-label">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            [(ngModel)]="registerData.email"
-          
-            class="form-control"
-            placeholder="Enter your email">
-          <div class="form-text">We'll never share your email with anyone else</div>
-        </div>
-
-        <!-- Password -->
-        <div class="form-group">
-          <label for="password" class="form-label">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            [(ngModel)]="registerData.password"
-            required
-            minlength="6"
-            class="form-control"
-            placeholder="Create a password"
-            (input)="checkPasswordStrength()">
-          <div class="password-strength" *ngIf="registerData.password">
-            <div class="strength-bar">
-              <div class="strength-fill" [ngClass]="getPasswordStrengthClass()"></div>
+        <div class="step-indicator">Step 1 of 2</div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress" style="width: 50%;"></div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="text-center">
+            <img src="https://img.icons8.com/ios-filled/50/000000/charity-box.png" alt="SpareChange Logo" style="height: 48px; margin-bottom: 1rem;">
+            <h2>Create Your Account</h2>
+            <p class="subtitle">Join thousands of people making a difference with their spare change</p>
+          </div>
+          <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+            <div class="input-row">
+              <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" name="firstName" [(ngModel)]="registerData.firstName" required />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input type="text" id="lastName" name="lastName" [(ngModel)]="registerData.lastName" required />
+              </div>
             </div>
-            <small [ngClass]="getPasswordStrengthClass()">
-              {{ getPasswordStrengthText() }}
-            </small>
-          </div>
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" [(ngModel)]="registerData.email" required />
+            </div>
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number *</label>
+              <input type="tel" id="phoneNumber" name="phoneNumber" [(ngModel)]="registerData.phoneNumber" required />
+            </div>
+            <div class="form-group">
+              <label for="password">Password *</label>
+              <input type="password" id="password" name="password" [(ngModel)]="registerData.password" required minlength="8" />
+              <small>Must be at least 8 characters</small>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password *</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" required />
+            </div>
+            <div class="terms-group">
+              <input type="checkbox" id="terms" name="terms" [(ngModel)]="registerData.termsAccepted" required />
+              <label for="terms">I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a></label>
+            </div>
+            <div *ngIf="errorMessage" class="alert alert-danger">
+              {{ errorMessage }}
+            </div>
+            <button type="submit" class="btn-submit" [disabled]="!registerForm.valid || isLoading">
+              {{ isLoading ? 'Creating Account...' : 'Continue' }}
+            </button>
+            <p class="login-link">
+              Already have an account? <a routerLink="/login">Log in</a>
+            </p>
+            <p class="secure-info">
+              Your information is encrypted and secure. We never share your personal data with third parties.
+            </p>
+          </form>
         </div>
-
-        <!-- Confirm Password -->
-        <div class="form-group">
-          <label for="confirmPassword" class="form-label">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            [(ngModel)]="confirmPassword"
-            required
-            class="form-control"
-            placeholder="Confirm your password">
-          <div *ngIf="registerData.password && confirmPassword && registerData.password !== confirmPassword" 
-               class="text-danger small mt-1">
-            Passwords do not match
-          </div>
-        </div>
-
-        <!-- Error Message -->
-        <div *ngIf="errorMessage" class="alert alert-danger">
-          <i class="fas fa-exclamation-circle me-2"></i>
-          {{ errorMessage }}
-        </div>
-
-        <!-- Submit Button -->
-        <button
-          type="submit"
-          class="btn btn-primary btn-lg w-100 mt-3"
-          [disabled]="!registerForm.valid || isLoading || registerData.password !== confirmPassword">
-          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-          {{ isLoading ? 'Creating Account...' : 'Create Account' }}
-        </button>
-
-        <!-- Login Link -->
-        <div class="text-center mt-4">
-          <p class="mb-0">
-            Already have an account? 
-            <a routerLink="/login" class="text-primary text-decoration-none fw-bold">
-              Sign in here
-            </a>
-          </p>
-        </div>
-
-        <!-- Terms Notice -->
-        <div class="text-center mt-3">
-          <small class="text-muted">
-            By creating an account, you agree to our 
-            <a href="#" class="text-muted">Terms of Service</a> and 
-            <a href="#" class="text-muted">Privacy Policy</a>
-          </small>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
-
-  <!-- Benefits Section -->
-  <div class="benefits-section">
-    <div class="container">
-      <div class="row text-center">
-        <div class="col-md-4 benefit-item">
-          <i class="fas fa-shield-alt fa-2x text-primary mb-3"></i>
-          <h5>Secure & Private</h5>
-          <p class="text-muted">Bank-level security with encryption</p>
+  <div class="info-panel-section">
+    <img src="https://images.unsplash.com/photo-1697665387559-253e7a645e96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGFyaXR5JTIwZG9uYXRpb24lMjBnaXZpbmclMjBoYW5kc3xlbnwxfHx8fDE3NjA2MTE4MjR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Making a difference together" class="background-image">
+    <div class="overlay"></div>
+    <div class="info-content">
+      <div class="donor-count">
+        <i class="fas fa-users"></i> Join 50,000+ donors
+      </div>
+      <h1>Turn Your Spare Change Into Real Change</h1>
+      <p>Every purchase you make can help create a better world. Start making an impact today with automated round-ups.</p>
+      <div class="stats">
+        <div class="stat-item">
+          <h3>$2.5M+</h3>
+          <p>Total Donated</p>
         </div>
-        <div class="col-md-4 benefit-item">
-          <i class="fas fa-hand-holding-heart fa-2x text-primary mb-3"></i>
-          <h5>Make an Impact</h5>
-          <p class="text-muted">Small change, big difference</p>
+        <div class="stat-item">
+          <h3>50K+</h3>
+          <p>Active Donors</p>
         </div>
-        <div class="col-md-4 benefit-item">
-          <i class="fas fa-chart-line fa-2x text-primary mb-3"></i>
-          <h5>Track Your Impact</h5>
-          <p class="text-muted">See how your donations help</p>
+        <div class="stat-item">
+          <h3>100%</h3>
+          <p>To Causes</p>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p>"I've donated over $300 this year without even noticing. It's the easiest way to give back while going about my daily life."</p>
+        <div class="testimonial-author">
+          <div>
+            <strong>Sarah Mitchell</strong>
+            <span>SpareChange member since 2023</span>
+          </div>
         </div>
       </div>
     </div>

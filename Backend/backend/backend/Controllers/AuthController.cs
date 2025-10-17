@@ -26,15 +26,17 @@ namespace The_Charity.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             // Basic validation
-            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+            if (string.IsNullOrWhiteSpace(request.FirstName) || string.IsNullOrWhiteSpace(request.LastName))
             {
-                return BadRequest(new { error = "Email and password are required" });
+                return BadRequest(new { error = "First name and last name are required" });
             }
 
-            if (string.IsNullOrWhiteSpace(request.Username))
+            if (!request.termsAccepted)
             {
-                return BadRequest(new { error = "Username is required" });
+                return BadRequest(new { error = "You must accept the terms and conditions" });
             }
+
+            var username = $"{request.FirstName} {request.LastName}";
 
             // Check if user already exists (case-insensitive)
             if (await _db.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower()))
@@ -42,7 +44,7 @@ namespace The_Charity.Controllers
                 return BadRequest(new { error = "User already exists with this email" });
             }
 
-            if (await _db.Users.AnyAsync(u => u.Username.ToLower() == request.Username.ToLower()))
+            if (await _db.Users.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
             {
                 return BadRequest(new { error = "Username already taken" });
             }
@@ -50,22 +52,25 @@ namespace The_Charity.Controllers
             try
             {
                 // Create Stripe customer - accepts any email format
-                var stripeCustomer = await _stripeService.CreateCustomerAsync(request.Email, request.Username);
+                var stripeCustomer = await _stripeService.CreateCustomerAsync(request.Email, username);
 
                 // Create user
                 var user = new User
                 {
-                    Username = request.Username.Trim(),
+                    Username = username,
+                    firstName = request.FirstName,
+                    lastName = request.LastName,
                     Email = request.Email.Trim().ToLower(),
                     PasswordHash = HashPassword(request.Password),
                     StripeCustomerId = stripeCustomer.Id,
                     PlaidUserId = Guid.NewGuid().ToString(),
-                    phoneNumber = "",
+                    phoneNumber = request.PhoneNumber,
                     authProvider = "local",
                     AuthSubject = "",
                     isActive = true,
                     isDeleted = false,
                     updatedAt = false,
+                    termsAccepted = request.termsAccepted,
                     CreatedAt = DateTime.UtcNow
                 };
 

@@ -634,7 +634,6 @@ namespace The_Charity.Controllers
                 }
             }
         }
-
         private async Task<IActionResult> CreateSimpleBankPaymentIntent(User user, Models.PaymentMethod paymentMethod,
             Charity charity, Donation donation, decimal amount)
         {
@@ -1097,7 +1096,7 @@ namespace The_Charity.Controllers
                     { "donation_id", donation.Id.ToString() },
                     { "user_id", user.Id.ToString() },
                     { "charity_id", charity.Id.ToString() },
-                    { "type", "roundup" },
+                    { "type", "roundup" },  
                     { "customer_email", user.Email }, // Store email in metadata
                     { "original_payment_method", paymentMethod.StripePaymentMethodId },
                     { "fallback_method", "charge_api" }

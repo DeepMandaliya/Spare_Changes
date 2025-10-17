@@ -9,11 +9,11 @@ using The_Charity.AppDBContext;
 
 #nullable disable
 
-namespace The_Charity.Migrations
+namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251013062947_databaseadd")]
-    partial class databaseadd
+    [Migration("20251017120817_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -640,6 +640,9 @@ namespace The_Charity.Migrations
                     b.Property<string>("phoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("termsAccepted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("updatedAt")
                         .HasColumnType("bit");
